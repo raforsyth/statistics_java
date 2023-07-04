@@ -1,10 +1,10 @@
-package vectors;
+package Datavectors;
 
 import java.util.Arrays;
 import java.util.stream.IntStream;
 
-public class doubleVector extends numericVector {
-    public doubleVector(String name) {
+public class DoubleVector extends NumericVector {
+    public DoubleVector(String name) {
         super(name);
     }
     /**
@@ -12,7 +12,7 @@ public class doubleVector extends numericVector {
      * @param vector
      * @throws IllegalArgumentException | vector == null
      */
-    public doubleVector(String name, double[] vector){
+    public DoubleVector(String name, double[] vector){
         super(name);
         if(vector == null){throw new IllegalArgumentException();}
         //this.numericVector=vector.clone();
@@ -38,6 +38,9 @@ public class doubleVector extends numericVector {
         for(Object dataPoint : this.vector){
             if(dataPoint ==null){dataPoint = data; break;}
         }
+    }
+    public void append(double[] dataArray){
+        for(double data: dataArray){this.add(data);}
     }
     
 }

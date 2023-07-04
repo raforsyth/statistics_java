@@ -1,13 +1,11 @@
-package vectors;
+package Datavectors;
 
-import java.lang.reflect.Array;
-import java.util.ArrayList;
 import java.util.stream.IntStream;
 
-public abstract class datavector {
+public abstract class Datavector {
     private String name;
     protected Object[] vector;
-    public datavector(String name){
+    public Datavector(String name){
         this.name = name;
     }
     public int length(){

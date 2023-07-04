@@ -1,14 +1,14 @@
-package vectors;
+package Datavectors;
 
 import java.util.Arrays;
 import java.util.stream.IntStream;
 
-public class intVector extends numericVector{
+public class IntVector extends NumericVector {
 
-    public intVector(String name) {
+    public IntVector(String name) {
         super(name);
     }
-    public intVector(String name, int[] vector){
+    public IntVector(String name, int[] vector){
         super(name);
         IntStream.range(0,vector.length).forEach(i->this.vector[i]=vector[i]);
     }
@@ -35,5 +35,8 @@ public class intVector extends numericVector{
         for(Object dataPoint : this.vector){
             if(dataPoint ==null){dataPoint = data; break;}
         }
+    }
+    public void append(int[] dataArray){
+        for(int data: dataArray){this.add(data);}
     }
 }
