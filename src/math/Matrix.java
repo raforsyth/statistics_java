@@ -12,6 +12,46 @@ public class Matrix {
     public Matrix(Vector[] matrix){
         this.matrix=matrix;
     }
+    public Matrix adjoint(){
+        /*
+            First we need to create a matrix of all the minors determinants
+         */
+        /*TODO write one by one matrix*/
+
+        if(this.getWidth()==2){
+            Matrix adjoint = new Matrix(new Vector[]{
+                    new Vector(new double[]{this.getIndex(1,1),-this.getIndex(1,0)}),
+                    new Vector(new double[]{-this.getIndex(0,1),this.getIndex(0,0)})
+            });
+            return adjoint;
+        }
+        Vector[] adjointArray = new Vector[this.getWidth()];
+        for(int col=0;col<this.getWidth();col++){
+            double[] adjointVArray = new double[this.getHeight()];
+            for(int row = 0;row<this.getHeight();row++ ){
+                Vector[] minorArray = new Vector[this.getWidth()-1];
+                int iRealcount=0;
+                for(int i=0;i<this.getWidth();i++){
+                    int jRealcount=0;
+                    if(i==row){continue;}
+                    double[] minorVArray = new double[this.getHeight()-1];
+                    for(int j=0; j<this.getHeight();j++){
+                        if(j==col){continue;}
+                        minorVArray[jRealcount] = this.getIndex(j,i);
+                        jRealcount+=1;
+                    }
+                    minorArray[iRealcount] = new Vector(minorVArray);
+                    iRealcount+=1;
+                }
+                adjointVArray[row] = (new Matrix(minorArray)).determinant() * pow((-1),row+col);
+            }
+            adjointArray[col] = new Vector(adjointVArray);
+        }
+        return new Matrix(adjointArray);
+    }
+    public Matrix inverse(){
+        return this.adjoint().multiply(1/this.determinant());
+    }
     public Matrix transpose(){
         Vector[] transposeArray = new Vector[this.getHeight()];
         for(int row =0; row<this.getHeight();row++){
@@ -69,6 +109,9 @@ public class Matrix {
         }
         return new Matrix(multiplied);
     }
+    public Matrix multiply(Vector b){
+        return this.multiply(new Matrix(new Vector[]{b}));
+    }
     /*
     TODO: fix the rep leakage here
      */
@@ -83,6 +126,9 @@ public class Matrix {
     }
     public double getIndex(int height,int width){
         return this.matrix[width].getIndex(height);
+    }
+    public Vector getCol(int col){
+        return this.matrix[col];
     }
     @Override
     public String toString(){
@@ -102,5 +148,12 @@ public class Matrix {
             }
         }
         return true;
+    }
+    public Vector leastSquaresRegression(Vector y){
+        Matrix ata = (this.transpose().multiply(this));
+        Matrix inverted = ata.inverse();
+        Matrix atb = this.transpose().multiply(y);
+        Matrix varColMatrix = inverted.multiply(atb);
+        return varColMatrix.getCol(0);
     }
 }

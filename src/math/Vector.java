@@ -34,4 +34,13 @@ public class Vector {
     public boolean equals(Vector b){
         return Arrays.equals(this.getVector(),b.getVector());
     }
+    @Override
+    public String toString(){
+        String returnString = new String();
+        for(double data : this.vector){
+            returnString+=data;
+            returnString+="\n";
+        }
+        return returnString;
+    }
 }

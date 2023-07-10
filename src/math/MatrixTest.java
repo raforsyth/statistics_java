@@ -40,9 +40,39 @@ class MatrixTest {
                 new Vector(new double[]{49,68,87}),
                 new Vector(new double[]{59,82,105}),
                 new Vector(new double[]{69,96,123})});
+        /*
         System.out.println(finalMatrix);
         System.out.println(a.multiply(b));
         System.out.println(finalMatrix.transpose());
+         */
         assertTrue(finalMatrix.equals(a.multiply(b)));
+    }
+    @Test
+    void adjoint(){
+        Matrix a= new Matrix(new Vector[]{
+                new Vector(new double[]{1,5,8}),
+                new Vector(new double[]{3,7,1}),
+                new Vector(new double[]{2,9,4})
+        });
+
+        System.out.println(a.adjoint());
+    }
+    @Test
+    void inverse(){
+        Matrix a= new Matrix(new Vector[]{
+                new Vector(new double[]{1,5,8}),
+                new Vector(new double[]{3,7,1}),
+                new Vector(new double[]{2,9,4})
+        });
+        System.out.println(a.inverse());
+    }
+    @Test
+    void leastSquare(){
+        Matrix a = new Matrix(new Vector[]{
+                new Vector(new double[]{4,0,1}),
+                new Vector(new double[]{0,2,1})
+        });
+        Vector b = new Vector(new double[]{2,0,11});
+        System.out.println(a.leastSquaresRegression(b));
     }
 }
