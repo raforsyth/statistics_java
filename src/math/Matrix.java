@@ -9,15 +9,31 @@ import static java.lang.Math.pow;
 
 public class Matrix {
     final Vector[] matrix;
-    public Matrix(Vector[] matrix){
-        this.matrix=matrix;
-    }
-    public Matrix adjoint(){
-        /*
-            First we need to create a matrix of all the minors determinants
-         */
-        /*TODO write one by one matrix*/
 
+    /**
+     * @param matrix | array of Vectors representing the contents of the matrix
+     * @throws IllegalArgumentException | matrix == null
+     * @throws IllegalArgumentException | Any contents of the vector array are null
+     *                                    Arrays.stream(matrix).anyMatch(i->i==null)
+     */
+    public Matrix(Vector[] matrix){
+        if(matrix==null){throw new IllegalArgumentException("Vector array cannot be null");}
+        if(Arrays.stream(matrix).anyMatch(i-> i==null)){throw new IllegalArgumentException("Vector array cannot have vectors with null contents");}
+        this.matrix=matrix;
+
+    }
+
+    /**
+     * @return adjoint Matrix
+     * @throws IllegalArgumentException | matrix must be square
+     *                                  | this.getWidth()!= this.getHeight
+     *
+     */
+    public Matrix adjoint(){
+        if(this.getWidth()!= this.getHeight()){throw new IllegalArgumentException("Adjoint calculation requires a square matrix");}
+        if(this.getWidth()==1){
+            return this;
+        }
         if(this.getWidth()==2){
             Matrix adjoint = new Matrix(new Vector[]{
                     new Vector(new double[]{this.getIndex(1,1),-this.getIndex(1,0)}),
@@ -49,7 +65,14 @@ public class Matrix {
         }
         return new Matrix(adjointArray);
     }
+    /**
+     *
+     * @return inverse matrix
+     * @throws IllegalArgumentException | Determinant must be larger than zero
+     *                                  | this.determinant()== 0
+     */
     public Matrix inverse(){
+        if(this.determinant()==0){throw new IllegalArgumentException("Determinant of Matrix cannot be zero for inverse");}
         return this.adjoint().multiply(1/this.determinant());
     }
     public Matrix transpose(){
@@ -66,7 +89,10 @@ public class Matrix {
     public double determinant(){
         ArrayList<Matrix> neededDets = new ArrayList<Matrix>();
         double sum = 0;
-        if(matrix.length == 2){
+        if(this.getWidth()==1){
+            return (1/(this.getIndex(0,0)));
+        }
+        if(this.getWidth() == 2){
             return (matrix[0].getIndex(0)*matrix[1].getIndex(1))-(matrix[0].getIndex(1)*matrix[1].getIndex(0));
         }
         for(int i=0; i<matrix.length;i++){
@@ -87,7 +113,13 @@ public class Matrix {
         }
         return sum;
     }
+
+    /**
+     * @param b
+     * @return
+     */
     public Matrix multiply(Matrix b){
+        if(this.getWidth()!= b.getHeight()){throw new IllegalArgumentException("cols must match rows for matrix multiplication");}
         Vector[] multipliedArray = new Vector[b.getWidth()];
         for(int i=0;i<b.getWidth();i++){
             double[] multipliedVector = new double[this.getHeight()];
@@ -110,11 +142,9 @@ public class Matrix {
         return new Matrix(multiplied);
     }
     public Matrix multiply(Vector b){
+        if(this.getWidth()!= b.getLength()){throw new IllegalArgumentException("Vector length must match width of matrix");}
         return this.multiply(new Matrix(new Vector[]{b}));
     }
-    /*
-    TODO: fix the rep leakage here
-     */
     public Vector[] getMatrix(){
         return this.matrix.clone();
     }
@@ -150,6 +180,7 @@ public class Matrix {
         return true;
     }
     public Vector leastSquaresRegression(Vector y){
+        if(this.determinant()==0){throw new IllegalArgumentException("Matrix is not invertible");}
         Matrix ata = (this.transpose().multiply(this));
         Matrix inverted = ata.inverse();
         Matrix atb = this.transpose().multiply(y);
